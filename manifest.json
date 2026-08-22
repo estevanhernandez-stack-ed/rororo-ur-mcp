@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "626labs.ur-mcp",
+  "name": "RoRoRo Ur MCP",
+  "version": "0.1.0",
+  "contractVersion": "1.0",
+  "publisher": "626 Labs LLC",
+  "description": "Lets an AI operator (Claude Code / Claude Desktop) drive RoRoRo over MCP: list and launch your saved accounts, follow the main, check who's in game, stop clients, and run or stop Ur Task macros. Installed and consented here; launched by Claude, not by RoRoRo — autostart stays off.",
+  "icon": "icon.png",
+  "entrypoint": "626labs.ur-mcp.exe",
+  "autostartDefault": "off",
+  "minHostVersion": "1.22.0",
+  "capabilities": [
+    "host.queries.accounts",
+    "host.commands.request-launch",
+    "host.commands.launch-target",
+    "host.commands.stop-accounts",
+    "host.queries.current-server",
+    "host.queries.account-activity"
+  ]
+}

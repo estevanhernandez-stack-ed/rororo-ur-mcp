@@ -1,0 +1,50 @@
+name: release
+
+# Tag push v* → build the three-artifact release RoRoRo's installer expects:
+# manifest.json + manifest.sha256 + plugin.zip. Same shape as ur-task's.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v6
+        with:
+          path: rororo-ur-mcp
+
+      - name: Checkout host (sibling layout the csproj expects)
+        uses: actions/checkout@v6
+        with:
+          repository: estevanhernandez-stack-ed/ROROROblox
+          path: ROROROblox
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Test
+        working-directory: rororo-ur-mcp
+        run: dotnet test tests/rororo-ur-mcp.Tests/rororo-ur-mcp.Tests.csproj -c Release --nologo
+
+      - name: Build plugin artifacts
+        working-directory: rororo-ur-mcp
+        shell: pwsh
+        run: ./build/build-plugin.ps1
+
+      - name: Create release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            rororo-ur-mcp/artifacts/manifest.json
+            rororo-ur-mcp/artifacts/manifest.sha256
+            rororo-ur-mcp/artifacts/plugin.zip
+          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') }}
+          generate_release_notes: true
+          draft: false

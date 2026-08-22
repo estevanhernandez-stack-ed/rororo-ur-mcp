@@ -1,0 +1,52 @@
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+.vs/
+
+# IDE
+.vscode/
+.idea/
+
+# Build artifacts shipped via GitHub Releases — never commit
+artifacts/
+publish/
+plugin.zip
+manifest.sha256
+
+# OS noise
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Logs
+*.log
+
+# Local credentials / secrets — paranoia bar
+*.env
+.env.local
+secrets/
+# .mcp.json holds a 626 agent bearer token — never commit
+.mcp.json
+
+# Community AutoHotkey reference macros — kept locally as design specs,
+# third-party authored, not published into this repo
+*.ahk
+
+# Superpowers brainstorming companion (local mockups)
+.superpowers/
+
+# Stray IDE-generated solution. Qodo/VS regenerate a .sln that pulls in the sibling ROROROblox
+# projects, so `dotnet build` against it drags the whole host app into the plugin's build — and
+# fails outright when a running RoRoRo holds its own DLLs. Build the .csproj directly. Same trap
+# the host repo documents for its own legacy .sln.
+rororo-ur-task.sln
