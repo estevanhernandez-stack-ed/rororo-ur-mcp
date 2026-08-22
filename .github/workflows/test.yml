@@ -1,9 +1,7 @@
 name: test
 
-# One job, with the sibling-host checkout unconditionally: unlike ur-task, this repo's MAIN
-# csproj ProjectReferences the contract (ROROROblox.PluginContract 0.9.0 is unpublished), so
-# there is no standalone leg yet. When the contract NuGet is pushed and the csproj swaps to a
-# PackageReference, this collapses to the family's fast standalone shape.
+# Standalone, the family's fast shape: the contract comes from NuGet (0.9.0+), so no sibling
+# checkout is needed anywhere.
 on:
   push:
     branches: [main]
@@ -14,16 +12,8 @@ jobs:
   unit-tests:
     runs-on: windows-latest
     steps:
-      - name: Checkout plugin
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          path: rororo-ur-mcp
-
-      - name: Checkout host (sibling layout the csproj expects)
-        uses: actions/checkout@v6
-        with:
-          repository: estevanhernandez-stack-ed/ROROROblox
-          path: ROROROblox
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
@@ -31,8 +21,4 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Test
-        working-directory: rororo-ur-mcp
-        run: >-
-          dotnet test tests/rororo-ur-mcp.Tests/rororo-ur-mcp.Tests.csproj
-          -c Release
-          --nologo
+        run: dotnet test tests/rororo-ur-mcp.Tests/rororo-ur-mcp.Tests.csproj -c Release --nologo

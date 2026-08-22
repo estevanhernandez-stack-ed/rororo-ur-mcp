@@ -53,13 +53,8 @@ Ur Task's own grants, and this connector contains no input-synthesis path of any
 
 ## Building
 
-Requires the ROROROblox repo checked out as a **sibling directory** (the contract is a
-ProjectReference until `ROROROblox.PluginContract` 0.9.0 is on NuGet):
-
-```
-<parent>/ROROROblox
-<parent>/rororo-ur-mcp
-```
+The contract comes from NuGet (`ROROROblox.PluginContract` 0.9.0+), so the repo builds
+standalone:
 
 ```
 dotnet test tests/rororo-ur-mcp.Tests/rororo-ur-mcp.Tests.csproj   # 27 tests

@@ -22,11 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The plugin contract, as a SIBLING ProjectReference while 0.9.0 (GetAccounts) is
-         unpublished — the same sibling-checkout layout ur-task's host-integration CI leg already
-         requires. Swap to <PackageReference Include="ROROROblox.PluginContract" Version="0.9.0" />
-         at first release, once the NuGet is pushed. -->
-    <ProjectReference Include="..\ROROROblox\src\ROROROblox.PluginContract\ROROROblox.PluginContract.csproj" />
+    <!-- Published via the host repo's trusted-publishing workflow; 0.9.0 is the first version
+         carrying GetAccounts. -->
+    <PackageReference Include="ROROROblox.PluginContract" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup>
