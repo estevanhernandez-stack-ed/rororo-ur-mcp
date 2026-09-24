@@ -69,4 +69,8 @@ tools listed.
 Design: ROROROblox `docs/superpowers/specs/2026-07-04-mcp-connector-design.md` (approved
 2026-07-04, reconciled against the trees 2026-08-22). Host-side `GetAccounts` shipped as contract
 0.9.0; Ur Task's `ListMacros`/`repeat`/`StopMacro` shipped as bridge additions in ur-task 0.8.0.
+## License
+
+Apache License 2.0, © 2026 626Labs LLC. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Releases published before 2026-09-24 were released under the MIT License. The contract bindings (`ROROROblox.PluginContract`) come from the parent RoRoRo repository under its own license (MIT).
+
 A 626 Labs product.
