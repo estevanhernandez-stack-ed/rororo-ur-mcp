@@ -147,12 +147,12 @@ public class MacroToolsTests
     {
         var bridge = new FakeBridge
         {
-            PlaybackResults = new([new(false, null, "unknown-playback", "No playback 'pb-7' (ended over 10 minutes ago?).", null)]),
+            PlaybackResults = new([new(false, null, "unknown-playback", "No playback with id 'pb-7'. Finished playbacks are kept for 10 minutes.", null)]),
         };
 
         var text = await MacroTools.WaitForMacro(bridge, "pb-7");
 
-        Assert.Equal("Ur Task refused: unknown-playback — No playback 'pb-7' (ended over 10 minutes ago?).", text);
+        Assert.Equal("Ur Task refused: unknown-playback — No playback with id 'pb-7'. Finished playbacks are kept for 10 minutes.", text);
     }
 
     [Fact]
