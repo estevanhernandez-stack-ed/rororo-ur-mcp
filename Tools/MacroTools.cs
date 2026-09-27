@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using Labs626.UrMcp.Ipc;
 using Labs626.UrMcp.Resolution;
@@ -76,4 +77,61 @@ public static class MacroTools
                 ? "Nothing was running."
                 : $"Stopped {result.Stopped} playback(s).";
         });
+
+    [McpServerTool(Name = "wait_for_macro"), Description(
+        "Wait for a macro playback to end, up to a timeout, and report how it ended: finished, stopped, or failed with the reason (e.g. a colour check that didn't match). Takes the playback id run_macro returned. timeoutSeconds=0 checks once without waiting. Ur Task keeps ended playbacks for 10 minutes.")]
+    public static async Task<string> WaitForMacro(IUrTaskBridge bridge,
+        [Description("The playback id run_macro returned")] string playbackId,
+        [Description("Seconds to wait before giving up (default 60, max 120; 0 = check once)")] int timeoutSeconds = 60)
+        => await AccountTools.Guard(async () =>
+        {
+            var deadline = TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 0, 120));
+            var sw = Stopwatch.StartNew();
+
+            while (true)
+            {
+                var result = await bridge.GetPlaybackAsync(playbackId).ConfigureAwait(false);
+                if (!result.Ok)
+                    return IsUnknownMethod(result)
+                        ? "This Ur Task is too old to report how a macro ended — update Ur Task to use wait_for_macro."
+                        : $"Ur Task refused: {result.Reason} — {result.Detail}";
+
+                if (!string.Equals(result.State, "running", StringComparison.OrdinalIgnoreCase))
+                    return DescribeEnded(playbackId, result);
+
+                if (sw.Elapsed >= deadline)
+                {
+                    var step = result.StepIndex is { } i ? $", at step {i}" : "";
+                    return deadline == TimeSpan.Zero
+                        ? $"Playback {playbackId} is still running{step}."
+                        : $"Timed out after {deadline.TotalSeconds:F0}s: playback {playbackId} is still running{step}. A repeat playback runs until stop_macro.";
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+            }
+        });
+
+    // Ur Task 0.8.0 answers a method it doesn't know with reason "refused" and this detail.
+    private static bool IsUnknownMethod(BridgePlaybackResult r)
+        => r.Detail?.StartsWith("Unknown method", StringComparison.OrdinalIgnoreCase) == true;
+
+    private static string DescribeEnded(string playbackId, BridgePlaybackResult r)
+    {
+        var why = (r.Reason, r.Detail) switch
+        {
+            (null or "", null or "") => "",
+            (null or "", var d) => $": {d}",
+            (var reason, null or "") => $": {reason}",
+            var (reason, d) => $": {reason} — {d}",
+        };
+        var text = r.State?.ToLowerInvariant() switch
+        {
+            "finished" => $"Playback {playbackId} finished",
+            "stopped" => $"Playback {playbackId} was stopped{why}",
+            "failed" => $"Playback {playbackId} failed{why}",
+            _ => $"Playback {playbackId} ended in state '{r.State}'{why}",
+        };
+        // Ur Task's reason sentences usually end in a period already.
+        return text.EndsWith('.') ? text : text + ".";
+    }
 }

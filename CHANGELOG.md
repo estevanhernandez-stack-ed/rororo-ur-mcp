@@ -2,6 +2,15 @@
 
 All notable changes to RoRoRo Ur MCP are documented here. Format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+- **`wait_for_macro`: how a macro playback ended.** Polls Ur Task's new `GetPlayback` bridge
+  method by the playback id `run_macro` returned, and answers finished, stopped, or failed with
+  Ur Task's reason (a colour check that didn't match, say). `timeoutSeconds: 0` checks once.
+  Against an Ur Task without the method it says the Ur Task is too old, instead of erroring.
+
 ## 0.1.0 — 2026-08-22
 
 ### Added
