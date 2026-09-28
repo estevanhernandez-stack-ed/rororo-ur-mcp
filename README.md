@@ -2,8 +2,8 @@
 
 Let Claude drive [RoRoRo](https://github.com/estevanhernandez-stack-ed/ROROROblox). This is a
 stdio MCP server that Claude Code or Claude Desktop launches as a subprocess, authorized as an
-installed, consent-gated RoRoRo plugin. Thirteen tools across two surfaces: your saved accounts
-(launch, follow, status, stop) and Ur Task's macros (list, run, stop).
+installed, consent-gated RoRoRo plugin. Fourteen tools across two surfaces: your saved accounts
+(launch, follow, status, stop) and Ur Task's macros (list, run, wait, stop).
 
 The design target is the recovery loop: internet drops mid-session, a Discord alert says an
 account fell out of game, you remote in and say — *"Launch Pokey, Spud, and Clover. Run the
@@ -26,6 +26,7 @@ agent-driven release smoke tests: launch → `wait_for_ingame` → `running_stat
 | `account_activity` | Idle time per account |
 | `host_info` | RoRoRo version + Multi-Instance (mutex) state |
 | `list_macros` / `run_macro` / `stop_macro` | Ur Task's macro library, with `repeat` and stop-by-playback-id |
+| `wait_for_macro` | Poll a playback id until it ends: finished, stopped, or failed with the reason. Needs Ur Task 0.9.0+ (`GetPlayback`) |
 
 Every failure is a readable answer, not a protocol error: "RoRoRo isn't running — open it and
 try again", "consent not granted for X — grant it in RoRoRo's Plugins window", and unknown names

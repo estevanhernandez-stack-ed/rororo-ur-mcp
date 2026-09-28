@@ -35,10 +35,12 @@ public sealed class UrTaskBridgeClient : IUrTaskBridge
         int? InterAltDelayMs, string CallerPluginId, bool Repeat);
     private sealed record StopMacroWire(
         string ContractVersion, string Method, string? PlaybackId, IReadOnlyList<string>? Targets, string CallerPluginId);
+    private sealed record GetPlaybackWire(string ContractVersion, string Method, string PlaybackId, string CallerPluginId);
 
     private sealed record ListMacrosReply(bool Ok, IReadOnlyList<BridgeMacro>? Macros, string? Reason, string? Detail);
     private sealed record RunMacroReply(bool Ok, string? PlaybackId, bool Queued, string? Reason, string? Detail);
     private sealed record StopMacroReply(bool Ok, int Stopped, string? Reason, string? Detail);
+    private sealed record GetPlaybackReply(bool Ok, string? State, string? Reason, string? Detail, int? StepIndex);
 
     public async Task<IReadOnlyList<BridgeMacro>> ListMacrosAsync(CancellationToken ct = default)
     {
@@ -63,6 +65,13 @@ public sealed class UrTaskBridgeClient : IUrTaskBridge
         var reply = await ExchangeAsync<StopMacroWire, StopMacroReply>(
             new StopMacroWire(ContractVersion, "StopMacro", playbackId, null, CallerPluginId), ct).ConfigureAwait(false);
         return new BridgeStopResult(reply.Ok, reply.Stopped, reply.Reason, reply.Detail);
+    }
+
+    public async Task<BridgePlaybackResult> GetPlaybackAsync(string playbackId, CancellationToken ct = default)
+    {
+        var reply = await ExchangeAsync<GetPlaybackWire, GetPlaybackReply>(
+            new GetPlaybackWire(ContractVersion, "GetPlayback", playbackId, CallerPluginId), ct).ConfigureAwait(false);
+        return new BridgePlaybackResult(reply.Ok, reply.State, reply.Reason, reply.Detail, reply.StepIndex);
     }
 
     private async Task<TReply> ExchangeAsync<TRequest, TReply>(TRequest request, CancellationToken ct)

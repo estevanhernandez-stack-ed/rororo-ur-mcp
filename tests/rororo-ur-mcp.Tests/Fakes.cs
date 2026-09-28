@@ -76,4 +76,17 @@ public sealed class FakeBridge : IUrTaskBridge
         LastStopId = playbackId;
         return Task.FromResult(StopResult);
     }
+
+    /// <summary>Answers in order; the last one repeats once the queue runs dry.</summary>
+    public Queue<BridgePlaybackResult> PlaybackResults { get; set; } = new();
+    private BridgePlaybackResult? _lastPlayback;
+    public List<string> PlaybackQueries { get; } = [];
+
+    public Task<BridgePlaybackResult> GetPlaybackAsync(string playbackId, CancellationToken ct = default)
+    {
+        if (Throw is not null) throw Throw;
+        PlaybackQueries.Add(playbackId);
+        if (PlaybackResults.Count > 0) _lastPlayback = PlaybackResults.Dequeue();
+        return Task.FromResult(_lastPlayback ?? new BridgePlaybackResult(true, "finished", null, null, null));
+    }
 }
