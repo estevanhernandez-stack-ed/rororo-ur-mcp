@@ -10,7 +10,7 @@
          should agree with what the build actually produces. -->
     <AssemblyName>626labs.ur-mcp</AssemblyName>
     <RootNamespace>Labs626.UrMcp</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
