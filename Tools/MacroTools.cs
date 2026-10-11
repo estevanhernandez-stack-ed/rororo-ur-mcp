@@ -17,17 +17,15 @@ namespace Labs626.UrMcp.Tools;
 public static class MacroTools
 {
     [McpServerTool(Name = "list_macros"), Description(
-        "List the macros recorded in Ur Task (id + name), for use with run_macro.")]
-    public static async Task<string> ListMacros(IUrTaskBridge bridge)
+        "List the macros recorded in Ur Task (id + name), for use with run_macro. Output is grouped by the text before the first ' | ' in the name (PLZ, ANY, HW Z4; names without one go under Ungrouped), with route steps like 'booth 1/3' in order first. For a long library, pass query= (case-insensitive; every word must appear in the name, e.g. 'booth confirm') and/or group= (exact group name, case-insensitive, e.g. 'PLZ').")]
+    public static async Task<string> ListMacros(IUrTaskBridge bridge,
+        [Description("Words to find in macro names; every word must match, any case")] string? query = null,
+        [Description("Only this group: the text before the first ' | ' in the name, e.g. 'PLZ'; 'Ungrouped' for names without one")] string? group = null)
         => await AccountTools.Guard(async () =>
         {
             var macros = await bridge.ListMacrosAsync().ConfigureAwait(false);
             if (macros.Count == 0) return "Ur Task has no recorded macros yet.";
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"{macros.Count} macro(s):");
-            foreach (var m in macros) sb.AppendLine($"- {m.Name} | id {m.Id}");
-            return sb.ToString().TrimEnd();
+            return MacroNaming.Render(macros, query, group);
         });
 
     [McpServerTool(Name = "run_macro"), Description(

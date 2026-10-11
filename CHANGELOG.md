@@ -1,6 +1,16 @@
 # Changelog
 
 All notable changes to RoRoRo Ur MCP are documented here. Format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
+## Unreleased
+
+### Added
+
+- **`list_macros`: `query` and `group`, plus grouped output.** `query` keeps macros whose name
+  contains every word (case-insensitive); `group` keeps one group, the text before the first
+  " | " in the name (names without one are "Ungrouped"). Output is grouped, route steps like
+  "booth 1/3" first in step order. Over 60 macros with no filter, it hints at the new
+  parameters. Filtering happens in the MCP, so any Ur Task version works unchanged.
+
 
 ## 0.2.0 — 2026-09-27
 

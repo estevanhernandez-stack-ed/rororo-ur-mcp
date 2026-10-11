@@ -25,7 +25,7 @@ agent-driven release smoke tests: launch → `wait_for_ingame` → `running_stat
 | `stop_accounts` | Close clients by name, or all — graceful close, then kill |
 | `account_activity` | Idle time per account |
 | `host_info` | RoRoRo version + Multi-Instance (mutex) state |
-| `list_macros` / `run_macro` / `stop_macro` | Ur Task's macro library, with `repeat` and stop-by-playback-id |
+| `list_macros` / `run_macro` / `stop_macro` | Ur Task's macro library: `list_macros` groups by name prefix and takes `query=` / `group=`; `run_macro` takes `repeat`; stop by playback id |
 | `wait_for_macro` | Poll a playback id until it ends: finished, stopped, or failed with the reason. Needs Ur Task 0.9.0+ (`GetPlayback`) |
 
 Every failure is a readable answer, not a protocol error: "RoRoRo isn't running — open it and
