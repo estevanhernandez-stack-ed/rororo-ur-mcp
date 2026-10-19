@@ -31,6 +31,35 @@ public class AccountToolsTests
     }
 
     [Fact]
+    public async Task HostInfo_WithBuildIdentity_ReportsFlavourVersionAndPath()
+    {
+        var host = new FakeHost
+        {
+            Info = new("1.22.0", true, "On", "dev", @"D:\build\ROROROblox.App.exe", "1.22.0+abc1234"),
+        };
+
+        var text = await AccountTools.HostInfo(host);
+
+        Assert.StartsWith("RoRoRo v1.22.0. Multi-Instance: On.", text);
+        Assert.Contains(" Build: dev.", text);
+        Assert.Contains(" Informational version: 1.22.0+abc1234.", text);
+        Assert.Contains(@" Process: D:\build\ROROROblox.App.exe.", text);
+        Assert.DoesNotContain("not reported", text);
+    }
+
+    [Fact]
+    public async Task HostInfo_WithEmptyBuildIdentity_SaysNotReported()
+    {
+        var host = new FakeHost { Info = new("1.22.0", true, "On", "", "", "") };
+
+        var text = await AccountTools.HostInfo(host);
+
+        Assert.Equal(
+            "RoRoRo v1.22.0. Multi-Instance: On. Build identity: not reported by this host (contract 0.11 or older).",
+            text);
+    }
+
+    [Fact]
     public async Task LaunchAccount_ResolvesTheNameToTheId()
     {
         var host = HostWith(Pokey, Spud);

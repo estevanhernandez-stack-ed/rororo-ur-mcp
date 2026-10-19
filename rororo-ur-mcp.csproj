@@ -10,7 +10,7 @@
          should agree with what the build actually produces. -->
     <AssemblyName>626labs.ur-mcp</AssemblyName>
     <RootNamespace>Labs626.UrMcp</RootNamespace>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Published via the host repo's trusted-publishing workflow; 0.9.0 is the first version
-         carrying GetAccounts. -->
-    <PackageReference Include="ROROROblox.PluginContract" Version="0.9.0" />
+    <!-- Published via the host repo's trusted-publishing workflow; 0.9.0 added GetAccounts, 0.12.0
+         added build identity (install_flavour, process_path, informational_version) to HostInfo. -->
+    <PackageReference Include="ROROROblox.PluginContract" Version="0.12.0" />
   </ItemGroup>
 
   <ItemGroup>

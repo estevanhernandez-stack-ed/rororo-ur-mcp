@@ -2,6 +2,18 @@
 
 All notable changes to RoRoRo Ur MCP are documented here. Format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## 0.4.0 — 2026-10-19
+
+### Changed
+
+- **Contract 0.12.0.** `ROROROblox.PluginContract` 0.9.0 to 0.12.0.
+- **`host_info` reports build identity.** After the version and Multi-Instance sentence it now
+  adds `Build: store|sideload|dev.`, `Informational version: <version+commit hash>.` and
+  `Process: <host exe path>.`, so an agent can tell which RoRoRo binary it is driving (a dev
+  build and the Store host used to report the same string). Hosts on contract 0.11 or older say
+  "Build identity: not reported by this host (contract 0.11 or older)."
+
+
 ## 0.3.0 — 2026-10-11
 
 ### Added
