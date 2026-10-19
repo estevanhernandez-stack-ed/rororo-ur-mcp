@@ -24,7 +24,7 @@ agent-driven release smoke tests: launch → `wait_for_ingame` → `running_stat
 | `wait_for_ingame` | Poll until presence confirms a game, up to a timeout |
 | `stop_accounts` | Close clients by name, or all — graceful close, then kill |
 | `account_activity` | Idle time per account |
-| `host_info` | RoRoRo version + Multi-Instance (mutex) state |
+| `host_info` | RoRoRo version, Multi-Instance (mutex) state, and build identity (store / sideload / dev, informational version, host process path) |
 | `list_macros` / `run_macro` / `stop_macro` | Ur Task's macro library: `list_macros` groups by name prefix and takes `query=` / `group=`; `run_macro` takes `repeat`; stop by playback id |
 | `wait_for_macro` | Poll a playback id until it ends: finished, stopped, or failed with the reason. Needs Ur Task 0.9.0+ (`GetPlayback`) |
 
@@ -54,7 +54,7 @@ Ur Task's own grants, and this connector contains no input-synthesis path of any
 
 ## Building
 
-The contract comes from NuGet (`ROROROblox.PluginContract` 0.9.0+), so the repo builds
+The contract comes from NuGet (`ROROROblox.PluginContract` 0.12.0+), so the repo builds
 standalone:
 
 ```

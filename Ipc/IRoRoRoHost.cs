@@ -17,7 +17,13 @@ public interface IRoRoRoHost
     Task<StopOutcome> StopAccountsAsync(IReadOnlyList<string> accountIds, CancellationToken ct = default);
 }
 
-public sealed record HostInfoDto(string Version, bool MultiInstanceEnabled, string MultiInstanceState);
+/// <summary>
+/// The last three fields are build identity (contract 0.12). Hosts on 0.11 or older send empty
+/// strings; empty means "not reported".
+/// </summary>
+public sealed record HostInfoDto(
+    string Version, bool MultiInstanceEnabled, string MultiInstanceState,
+    string InstallFlavour = "", string ProcessPath = "", string InformationalVersion = "");
 
 public sealed record HostAccount(string AccountId, long RobloxUserId, string DisplayName, bool IsMain);
 

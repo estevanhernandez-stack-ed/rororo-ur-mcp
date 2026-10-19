@@ -39,7 +39,8 @@ public sealed class RoRoRoHostClient : IRoRoRoHost, IDisposable
     {
         var client = await EnsureHandshakeAsync(ct).ConfigureAwait(false);
         var info = await Invoke(() => client.GetHostInfoAsync(new Empty(), Headers(), cancellationToken: ct).ResponseAsync).ConfigureAwait(false);
-        return new HostInfoDto(info.Version, info.MultiInstanceEnabled, info.MultiInstanceState);
+        return new HostInfoDto(info.Version, info.MultiInstanceEnabled, info.MultiInstanceState,
+            info.InstallFlavour ?? "", info.ProcessPath ?? "", info.InformationalVersion ?? "");
     }
 
     public async Task<IReadOnlyList<HostAccount>> GetAccountsAsync(CancellationToken ct = default)

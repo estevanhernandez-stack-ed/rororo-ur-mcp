@@ -218,13 +218,25 @@ public static class AccountTools
         });
 
     [McpServerTool(Name = "host_info"), Description(
-        "RoRoRo's version and multi-instance (mutex) state — the first thing to check in a smoke run or when launches misbehave.")]
+        "RoRoRo's version, multi-instance (mutex) state and build identity — the first thing to check in a smoke run or when launches misbehave. " +
+        "The \"Build:\" line (store / sideload / dev), the informational version (with commit hash) and the host process path say which RoRoRo binary you are driving; " +
+        "trust those, not the version string alone, when you need to know whether this is a dev build or the Store host.")]
     public static async Task<string> HostInfo(IRoRoRoHost host)
         => await Guard(async () =>
         {
             var info = await host.GetHostInfoAsync().ConfigureAwait(false);
-            return $"RoRoRo v{info.Version}. Multi-Instance: {info.MultiInstanceState}" +
-                   (info.MultiInstanceEnabled ? "" : " (disabled)") + ".";
+            var sb = new StringBuilder(
+                $"RoRoRo v{info.Version}. Multi-Instance: {info.MultiInstanceState}" +
+                (info.MultiInstanceEnabled ? "" : " (disabled)") + ".");
+            var flavour = info.InstallFlavour?.Trim() ?? "";
+            var iv = info.InformationalVersion?.Trim() ?? "";
+            var path = info.ProcessPath?.Trim() ?? "";
+            if (flavour.Length > 0) sb.Append($" Build: {flavour}.");
+            if (iv.Length > 0) sb.Append($" Informational version: {iv}.");
+            if (path.Length > 0) sb.Append($" Process: {path}.");
+            if (flavour.Length == 0 && iv.Length == 0 && path.Length == 0)
+                sb.Append(" Build identity: not reported by this host (contract 0.11 or older).");
+            return sb.ToString();
         });
 
     /// <summary>Every failure is a readable answer — see the class doc.</summary>
