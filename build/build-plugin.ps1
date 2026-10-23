@@ -44,6 +44,19 @@ $publish = Join-Path $artifacts "publish"
 Write-Host "[build-plugin] root: $root"
 Write-Host "[build-plugin] configuration: $Configuration | runtime: $Runtime | self-contained: $SelfContained"
 
+# Version guard. The manifest is what RoRoRo reads (it ships inside plugin.zip), the csproj is
+# what the binary reports, and the tag names the release. v0.4.0 shipped with a 0.3.0 manifest
+# and a 0.4.0 binary, which would have looped the host's update prompt. All three must agree.
+$manifestVersion = (Get-Content "$root/manifest.json" -Raw | ConvertFrom-Json).version
+$csprojVersion = ([xml](Get-Content "$root/rororo-ur-mcp.csproj" -Raw)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+if ($manifestVersion -ne $csprojVersion) {
+    throw "Version mismatch: manifest.json says '$manifestVersion', rororo-ur-mcp.csproj says '$csprojVersion'. Bump both."
+}
+if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -ne "v$manifestVersion") {
+    throw "Version mismatch: tag '$($env:GITHUB_REF_NAME)' does not match manifest version '$manifestVersion' (expected 'v$manifestVersion')."
+}
+Write-Host "[build-plugin] version: $manifestVersion (manifest, csproj$(if ($env:GITHUB_REF_TYPE -eq 'tag') { ', tag' }) agree)"
+
 if (Test-Path $artifacts) {
     Write-Host "[build-plugin] clearing $artifacts"
     Remove-Item $artifacts -Recurse -Force

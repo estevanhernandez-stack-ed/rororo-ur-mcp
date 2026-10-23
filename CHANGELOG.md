@@ -2,6 +2,20 @@
 
 All notable changes to RoRoRo Ur MCP are documented here. Format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## 0.4.1 — 2026-10-23
+
+### Fixed
+
+- **The 0.4.0 release reported itself as 0.3.0.** The binary was 0.4.0, but `manifest.json` was
+  never bumped, and the manifest is what RoRoRo reads (it ships inside `plugin.zip` as well as
+  beside it). Once RoRoRo's catalog advertised 0.4.0, a direct-download host would have offered
+  an update that could never clear, because installing it delivered another 0.3.0 manifest. No
+  code change from 0.4.0.
+- **The build now refuses a version mismatch.** `build/build-plugin.ps1` fails when
+  `manifest.json` and the csproj `<Version>` disagree, and in CI when the tag is not
+  `v<version>`, so this cannot ship again.
+
+
 ## 0.4.0 — 2026-10-19
 
 ### Changed
