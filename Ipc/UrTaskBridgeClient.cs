@@ -37,6 +37,11 @@ public sealed class UrTaskBridgeClient : IUrTaskBridge
         string ContractVersion, string Method, string? PlaybackId, IReadOnlyList<string>? Targets, string CallerPluginId);
     private sealed record GetPlaybackWire(string ContractVersion, string Method, string PlaybackId, string CallerPluginId);
 
+    private sealed record GetStatusWire(string ContractVersion, string Method, string CallerPluginId);
+    private sealed record GetStatusReply(
+        bool Ok, BridgeKeepAlive? KeepAlive, IReadOnlyList<BridgeAccountStatus>? Accounts,
+        IReadOnlyList<BridgePlaybackStatus>? Playbacks, string? Reason, string? Detail);
+
     private sealed record ListMacrosReply(bool Ok, IReadOnlyList<BridgeMacro>? Macros, string? Reason, string? Detail);
     private sealed record RunMacroReply(bool Ok, string? PlaybackId, bool Queued, string? Reason, string? Detail);
     private sealed record StopMacroReply(bool Ok, int Stopped, string? Reason, string? Detail);
@@ -72,6 +77,13 @@ public sealed class UrTaskBridgeClient : IUrTaskBridge
         var reply = await ExchangeAsync<GetPlaybackWire, GetPlaybackReply>(
             new GetPlaybackWire(ContractVersion, "GetPlayback", playbackId, CallerPluginId), ct).ConfigureAwait(false);
         return new BridgePlaybackResult(reply.Ok, reply.State, reply.Reason, reply.Detail, reply.StepIndex);
+    }
+
+    public async Task<BridgeStatus> GetStatusAsync(CancellationToken ct = default)
+    {
+        var reply = await ExchangeAsync<GetStatusWire, GetStatusReply>(
+            new GetStatusWire(ContractVersion, "GetStatus", CallerPluginId), ct).ConfigureAwait(false);
+        return new BridgeStatus(reply.Ok, reply.KeepAlive, reply.Accounts, reply.Playbacks, reply.Reason, reply.Detail);
     }
 
     private async Task<TReply> ExchangeAsync<TRequest, TReply>(TRequest request, CancellationToken ct)
