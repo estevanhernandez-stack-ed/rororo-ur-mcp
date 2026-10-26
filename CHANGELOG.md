@@ -2,6 +2,18 @@
 
 All notable changes to RoRoRo Ur MCP are documented here. Format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## 0.5.0 — 2026-10-25
+
+### Added
+
+- **`keepalive_status` tool.** Reads Ur Task's new `GetStatus` and answers in one glance: whether
+  keep-alive is running (and turbo), then one line per account with its idle time, the time it
+  needs input by, and its misses, e.g. `Pokey: idle 6m, needs input by 15:42 (keep-alive), misses 0`.
+  Accounts with keep-alive off say so, a macro paused for keep-alive is named, and the last miss
+  is appended when there is one. Use it before a long run to see who needs a Space and when.
+  Needs Ur Task 0.13.0 or later; an older Ur Task gets "Update Ur Task to 0.13.0 or later to see
+  keep-alive status." instead of an error.
+
 ## 0.4.1 — 2026-10-23
 
 ### Fixed

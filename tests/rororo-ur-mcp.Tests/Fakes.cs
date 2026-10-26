@@ -89,4 +89,9 @@ public sealed class FakeBridge : IUrTaskBridge
         if (PlaybackResults.Count > 0) _lastPlayback = PlaybackResults.Dequeue();
         return Task.FromResult(_lastPlayback ?? new BridgePlaybackResult(true, "finished", null, null, null));
     }
+
+    public BridgeStatus Status { get; set; } = new(true, new BridgeKeepAlive("running", false), [], [], null, null);
+
+    public Task<BridgeStatus> GetStatusAsync(CancellationToken ct = default)
+        => Throw is not null ? throw Throw : Task.FromResult(Status);
 }
